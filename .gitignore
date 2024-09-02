@@ -74,3 +74,8 @@ build/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 .metadata
+.fvm/flutter_sdk
+.fvm/fvm_config.json
+.vscode/settings.json
+example/.fvm/flutter_sdk
+example/.fvm/fvm_config.json
