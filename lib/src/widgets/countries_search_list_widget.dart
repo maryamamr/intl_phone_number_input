@@ -5,6 +5,17 @@ import 'package:intl_phone_number_input/src/utils/util.dart';
 
 /// Creates a list of Countries with a search textfield.
 class CountrySearchListWidget extends StatefulWidget {
+
+  const CountrySearchListWidget(
+    this.countries,
+    this.locale, {super.key, 
+    this.searchBoxDecoration,
+    this.scrollController,
+    this.showFlags,
+    this.useEmoji,
+    this.autoFocus = false,
+    this.selectorTextStyle
+  });
   final List<Country> countries;
   final InputDecoration? searchBoxDecoration;
   final String? locale;
@@ -12,24 +23,15 @@ class CountrySearchListWidget extends StatefulWidget {
   final bool autoFocus;
   final bool? showFlags;
   final bool? useEmoji;
-
-  CountrySearchListWidget(
-    this.countries,
-    this.locale, {
-    this.searchBoxDecoration,
-    this.scrollController,
-    this.showFlags,
-    this.useEmoji,
-    this.autoFocus = false,
-  });
+  final TextStyle? selectorTextStyle;
 
   @override
-  _CountrySearchListWidgetState createState() =>
-      _CountrySearchListWidgetState();
+  CountrySearchListWidgetState createState() =>
+      CountrySearchListWidgetState();
 }
 
-class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
-  late TextEditingController _searchController = TextEditingController();
+class CountrySearchListWidgetState extends State<CountrySearchListWidget> {
+  late final TextEditingController _searchController = TextEditingController();
   late List<Country> filteredCountries;
 
   @override
@@ -52,7 +54,7 @@ class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
   /// Returns [InputDecoration] of the search box
   InputDecoration getSearchBoxDecoration() {
     return widget.searchBoxDecoration ??
-        InputDecoration(labelText: 'Search by country name or dial code');
+        const InputDecoration(labelText: 'Search by country name or dial code');
   }
 
   @override
@@ -63,7 +65,7 @@ class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
           child: TextFormField(
-            key: Key(TestHelper.CountrySearchInputKeyValue),
+            key: const Key(TestHelper.CountrySearchInputKeyValue),
             decoration: getSearchBoxDecoration(),
             controller: _searchController,
             autofocus: widget.autoFocus,
@@ -85,13 +87,14 @@ class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
             shrinkWrap: true,
             itemCount: filteredCountries.length,
             itemBuilder: (BuildContext context, int index) {
-              Country country = filteredCountries[index];
+              final Country country = filteredCountries[index];
 
               return DirectionalCountryListTile(
                 country: country,
                 locale: widget.locale,
                 showFlags: widget.showFlags!,
                 useEmoji: widget.useEmoji!,
+                selectorTextStyle: widget.selectorTextStyle,
               );
               // return ListTile(
               //   key: Key(TestHelper.countryItemKeyValue(country.alpha2Code)),
@@ -132,10 +135,6 @@ class _CountrySearchListWidgetState extends State<CountrySearchListWidget> {
 }
 
 class DirectionalCountryListTile extends StatelessWidget {
-  final Country country;
-  final String? locale;
-  final bool showFlags;
-  final bool useEmoji;
 
   const DirectionalCountryListTile({
     Key? key,
@@ -143,7 +142,13 @@ class DirectionalCountryListTile extends StatelessWidget {
     required this.locale,
     required this.showFlags,
     required this.useEmoji,
+    required this.selectorTextStyle
   }) : super(key: key);
+  final Country country;
+  final String? locale;
+  final bool showFlags;
+  final bool useEmoji;
+   final TextStyle? selectorTextStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -161,9 +166,10 @@ class DirectionalCountryListTile extends StatelessWidget {
       subtitle: Align(
         alignment: AlignmentDirectional.centerStart,
         child: Text(
-          '${country.dialCode ?? ''}',
+          country.dialCode ?? '',
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.start,
+          style: selectorTextStyle,
         ),
       ),
       onTap: () => Navigator.of(context).pop(country),
@@ -172,10 +178,10 @@ class DirectionalCountryListTile extends StatelessWidget {
 }
 
 class _Flag extends StatelessWidget {
+
+  const _Flag({this.country, this.useEmoji});
   final Country? country;
   final bool? useEmoji;
-
-  const _Flag({Key? key, this.country, this.useEmoji}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -193,8 +199,8 @@ class _Flag extends StatelessWidget {
                           package: 'intl_phone_number_input',
                         ),
                       )
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 }
