@@ -25,40 +25,35 @@ class Item extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String dialCode = (country?.dialCode ?? '');
+    String dialCode = country?.dialCode ?? '';
     if (trailingSpace) {
       dialCode = dialCode.padRight(5, "   ");
     }
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          SizedBox(width: leadingPadding),
-          _Flag(
-            country: country,
-            showFlag: showFlag,
-            useEmoji: useEmoji,
-          ),
-          SizedBox(width: 12.0),
-          Text(
-            '$dialCode',
-            textDirection: TextDirection.ltr,
-            style: textStyle,
-          ),
-        ],
-      ),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        SizedBox(width: leadingPadding),
+        _Flag(
+          country: country,
+          showFlag: showFlag,
+          useEmoji: useEmoji,
+        ),
+        const SizedBox(width: 12.0),
+        Text(
+          dialCode,
+          textDirection: TextDirection.ltr,
+          style: textStyle,
+        ),
+      ],
     );
   }
 }
 
 class _Flag extends StatelessWidget {
+  const _Flag({this.country, this.showFlag, this.useEmoji});
   final Country? country;
   final bool? showFlag;
   final bool? useEmoji;
-
-  const _Flag({Key? key, this.country, this.showFlag, this.useEmoji})
-      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,16 +65,19 @@ class _Flag extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineSmall,
                   )
                 : CircleAvatar(
+                    backgroundColor: Colors.transparent,
                     child: Image.asset(
                       country!.flagUri,
                       width: 32.0,
+                      fit: BoxFit.cover,
                       package: 'intl_phone_number_input',
-                      errorBuilder: (context, error, stackTrace) {
-                        return SizedBox.shrink();
+                      errorBuilder: (BuildContext context, Object error,
+                          StackTrace? stackTrace) {
+                        return const SizedBox.shrink();
                       },
                     ),
                   ),
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 }
